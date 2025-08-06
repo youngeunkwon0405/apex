@@ -408,8 +408,6 @@ if has_flag("--cuda_ext", "APEX_CUDA_EXT"):
 
         cc_flag = []
         cc_flag.append("-gencode")
-        cc_flag.append("arch=compute_70,code=sm_70")
-        cc_flag.append("-gencode")
         cc_flag.append("arch=compute_80,code=sm_80")
         if bare_metal_version >= Version("11.1"):
             cc_flag.append("-gencode")
@@ -533,7 +531,7 @@ if has_flag("--group_norm", "APEX_GROUP_NORM"):
     # CUDA group norm supports from SM70
     arch_flags = []
     # FIXME: this needs to be done more cleanly
-    for arch in [70, 75, 80, 86, 90, 100, 120]:
+    for arch in [80, 86, 90, 100, 120]:
         arch_flag = f"-gencode=arch=compute_{arch},code=sm_{arch}"
         arch_flags.append(arch_flag)
     arch_flags.append(arch_flag)
@@ -652,8 +650,6 @@ if has_flag("--fast_layer_norm", "APEX_FAST_LAYER_NORM"):
     raise_if_cuda_home_none("--fast_layer_norm")
 
     cc_flag = []
-    cc_flag.append("-gencode")
-    cc_flag.append("arch=compute_70,code=sm_70")
 
     if bare_metal_version >= Version("11.0"):
         cc_flag.append("-gencode")
@@ -756,8 +752,6 @@ if has_flag("--fast_multihead_attn", "APEX_FAST_MULTIHEAD_ATTN"):
     raise_if_cuda_home_none("--fast_multihead_attn")
 
     cc_flag = []
-    cc_flag.append("-gencode")
-    cc_flag.append("arch=compute_70,code=sm_70")
 
     if bare_metal_version >= Version("11.0"):
         cc_flag.append("-gencode")

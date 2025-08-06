@@ -18,8 +18,10 @@ def create_nccl_mem_pool(symmetric: bool | None = None) -> torch.cuda.MemPool:
         _pool = torch.cuda.MemPool(_allocator)
     else:
         if 'symmetric' in get_func_args(torch.cuda.MemPool):
+            print('\033[33m[APEX] custom build apex nccl_allocator create mem pool for symmetric!\033[0m')
             _pool = torch.cuda.MemPool(_allocator, symmetric=symmetric)
         elif 'symm_mem' in get_func_args(torch.cuda.MemPool):
+            print('\033[33m[APEX] custom build apex nccl_allocator create mem pool for symm_mem!\033[0m')
             # This path handles argument name divergence between 
             # nvidia pytorch and the official pytorch.
             _pool = torch.cuda.MemPool(_allocator, symm_mem=symmetric)
@@ -32,6 +34,7 @@ def create_nccl_mem_pool(symmetric: bool | None = None) -> torch.cuda.MemPool:
 def init() -> None:
     os.environ["NCCL_NVLS_ENABLE"] = "1"
     os.environ["TORCH_NCCL_USE_TENSOR_REGISTER_ALLOCATOR_HOOK"] = "0"
+    print('\033[33m[APEX] custom build apex nccl_allocator init!\033[0m')
 
 
 class nccl_mem:
@@ -74,5 +77,7 @@ class nccl_mem:
             try:
                 backend.register_mem_pool(self.pool)
             except RuntimeError:
-                pass
+                import traceback
+                traceback.print_exc()
+                print("\033[33m[APEX][RuntimeError] Failed to register mem pool!!!\033[0m\n")
         self.mem_context.__exit__(*args)
